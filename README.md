@@ -1,23 +1,28 @@
-# Example_RSA
+# Example_RSA_by_pycryptodome 
 
-PyCryptodomeを使用して暗号化／復号および電子署名の生成／復号を行うPytho3用プログラムです。
-あらかじめ pycryptodome をインストールしておいてください。
+PyCryptodomeを使用してファイルの暗号化／復号を行うPytho3用プログラムです。<br>
+<br>
+
+なお、サポートが終了した Crypto や pycrypto のモジュールがインストールされている場合は、<br>
+事前にアンインストールしておいてください。<br>
+<br>
+```
+pip uninstall Crypto
+pip uninstall pycrypto
+```
+<br>
+
+続いて、pycryptodome をインストールします。<br>
 
 ```
 pip install pycryptodome
 ```
 
-
-公開鍵で暗号化し、秘密鍵で復号する（暗号化データの送受信）ことができます。
-
-そのほか、元ファイルと復号後のファイルの内容のチェック用に、
-<br>
-ファイルのハッシュ値を出力するプログラムとして、
-<br>
-ファイルのハッシュ値出力ツール print_FileHash.py
-<br>
-を用意しています。
-<br>
+公開鍵で暗号化し、秘密鍵で復号する（暗号化データの送受信）ことができます。<br>
+そのほか、元ファイルと復号後のファイルの内容のチェック用に、<br>
+ファイルのハッシュ値を出力するプログラムとして、<br>
+ファイルのハッシュ値出力ツール **print_FileHash.py**<br>
+を用意しています。<br>
 <br>
 
 ### 1. 鍵ペア（秘密鍵／公開鍵ファイル）の生成（rsa_main.py）
@@ -38,14 +43,8 @@ Create Keys done.
 
 ### 2. 元ファイルから暗号化ファイルを生成する（rsa_main.py）
 
-"rsa_main.py encrypt"に続けて、
-<br>
-暗号化したい元ファイル名、
-<br>
-暗号化後のファイル名、
-<br>
-公開鍵ファイル
-<br>
+"rsa_main.py encrypt"に続けて、<br>
+暗号化したい元ファイル名、 暗号化後のファイル名、 公開鍵ファイル<br>
 を指定して rsa_main.py を実行します。
 
 ```
@@ -57,8 +56,9 @@ $ python rsa_main.py encrypt 暗号化したい元ファイル名 暗号化後�
 
 ### 3. 暗号化後のファイルから元のファイルを復号する（rsa_main.py）
 
-"rsa_main.py decrypt"に続けて、暗号化後のファイル名、復号後のファイル名、秘密鍵ファイルを指定して
-rsa_main.pyを実行します。
+"rsa_main.py decrypt"に続けて、<br>
+暗号化後のファイル名、復号後のファイル名、秘密鍵ファイル<br>
+を指定して rsa_main.py を実行します。
 
 ```
 $ python rsa_main.py decrypt 暗号化後の出力結果ファイル 復号後のファイル名 秘密鍵ファイル
