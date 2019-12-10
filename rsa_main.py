@@ -16,8 +16,8 @@ def main():
     if argc < 2:
         exit_msg(argv[0])
 
-    if argv[1] == "create_key" or argv[1] == "key":
-        create_key(1024)
+    if argv[1] == "createkey" or argv[1] == "key":
+        createkey(1024)
     else:
         if argc < 5:           
             exit_msg(argv[0])
@@ -44,9 +44,9 @@ def main():
 
 
 def exit_msg(argv0):
-    print("Usage: python %s [encrypt | decrypt | create_key] [変換前ファイル] [変換後ファイル] [公開鍵ファイル | 秘密鍵ファイル]" %argv0)
-    print("example1) -- create_key\n"
-            "python rsa_main_mode_bin.py create_key\n\n"
+    print("Usage: python %s [encrypt | decrypt | createkey] [変換前ファイル] [変換後ファイル] [公開鍵ファイル | 秘密鍵ファイル]" %argv0)
+    print("example1) -- createkey\n"
+            "python rsa_main_mode_bin.py createkey\n\n"
             "example2) -- encrypt"
             "python rsa_main_mode_bin.py encrypt file1 file2 key_public.pem\n\n"
             "example3) -- decrypt"
@@ -54,7 +54,7 @@ def exit_msg(argv0):
     exit(0)
 
 
-def create_key(n):
+def createkey(n):
     print("Public key filename [key_public.pem]:", end = '')
     public_key_filename = input()
     if public_key_filename == "":
@@ -120,16 +120,13 @@ def encrypt_binary(keyfile, read_file, write_file):
         plain_bytes.append(d)
     f.close
 
-    """暗号化および結果の出力"""
-
-    # 2019/12/09 デバッグ中
-    # https://www.pycryptodome.org/en/latest/src/examples.html
-
+    """暗号化"""
     public_cipher = PKCS1_OAEP.new(public_key)
     encrypted_bytes = []
     for block in plain_bytes:
         encrypted_bytes.append(public_cipher.encrypt(block))
 
+    """結果の出力"""
     with open(write_file, 'wb') as f:
         for d in encrypted_bytes:
             f.write(d)
@@ -149,12 +146,13 @@ def decrypt_binary(keyfile, read_file, write_file):
         encrypted_bytes.append(d)
     f.close
 
-    """復号化および結果の出力"""
+    """復号化"""
     private_cipher = PKCS1_OAEP.new(private_key)
     decrypted_bytes = []
     for block in encrypted_bytes:
         decrypted_bytes.append(private_cipher.decrypt(block))
 
+    """結果の出力"""
     with open(write_file, 'wb') as f:
         for d in decrypted_bytes:
             f.write(d)

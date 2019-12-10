@@ -27,12 +27,13 @@ pip install pycryptodome
 
 ### 1. 鍵ペア（秘密鍵／公開鍵ファイル）の生成（rsa_main.py）
 
-公開鍵／秘密鍵を生成します。
+最初に公開鍵／秘密鍵を生成します。<br>
+"rsa_main.py"に続けて、"createkey"を指定します。<br>
 <br>
 生成された鍵は、デフォルトではそれぞれ"key_public.pem", "key_private.pem"というファイルに出力されます。
 
 ```
-$ python rsa_main.py create_key
+$ python rsa_main.py createkey
 Public key filename [key_public.pem]:
 Private key filename [key_private.pem]:
 Create Keys done.
@@ -116,7 +117,7 @@ $ cd TestScripts/bash
 $ ./repeated_main.sh
 #### encypt(public_key) --> decrypt(private_key) ###
 args = main.ps1 ./key_public.pem ./key_private.pem ./original.jpg ./test.bin ./test.jpg
-Execute: python ../../rsa_main.py create_key
+Execute: python ../../rsa_main.py createkey
 Execute: python ../../rsa_main.py encrypt ./original.jpg ./test.bin ./key_public.pem
 Execute: python ../../rsa_main.py decrypt ./test.bin ./test.jpg ./key_private.pem
 ./key_public.pem     :
@@ -161,7 +162,7 @@ PS D:\work\Example_RSA> cd .\TestScripts\ps1
 ```
 PS D:\work\Example_RSA\TestScripts\ps1>.\repeated_main.ps1
 args = ./main.sh key_public.pem key_private.pem ./original.jpg ./test.bin ./test.jpg
-Execute: python ../../rsa_main.py create_key
+Execute: python ../../rsa_main.py createkey
 Execute: python ../../rsa_main.py encrypt ./original.jpg ./test.bin key_public.pem
 Execute: python ../../rsa_main.py decrypt ./test.bin ./test.jpg key_private.pem
 key_public.pem      :

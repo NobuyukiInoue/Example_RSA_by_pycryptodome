@@ -57,9 +57,9 @@ fi
 ## 公開鍵／秘密鍵ファイルの生成
 ##--------------------------------------------------------##
 
-printf "Execute: python $cmd_rsa_main create_key\n"
+printf "Execute: python $cmd_rsa_main createkey\n"
 
-python $cmd_rsa_main create_key 1> /dev/null << EOS
+python $cmd_rsa_main createkey 1> /dev/null << EOS
 $keyfile1
 $keyfile2
 EOS

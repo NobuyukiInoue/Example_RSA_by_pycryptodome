@@ -60,8 +60,8 @@ if (Test-Path $file3) {
 
 $keyfiles = $keyfile1 + "`n" + $keyfile2 + "`n"
 
-Write-Host "Execute: python"$cmd_rsa_main" create_key"
-$keyfiles | python $cmd_rsa_main create_key > $NULL
+Write-Host "Execute: python"$cmd_rsa_main" createkey"
+$keyfiles | python $cmd_rsa_main createkey > $NULL
 
 
 ##--------------------------------------------------------##
