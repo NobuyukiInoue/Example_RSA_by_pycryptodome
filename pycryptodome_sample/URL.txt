@@ -1,0 +1,11 @@
+☆pycryptodomeのインストール
+pip install pycryptodome
+
+
+旧式のモジュールはアンインストールしておくこと。
+pip uninstall Crypto
+pip uninstall pycrypto
+
+
+RSA暗号と電子署名
+https://www.python.ambitious-engineer.com/archives/2042
