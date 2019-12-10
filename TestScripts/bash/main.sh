@@ -28,7 +28,7 @@ fi
 ## 検証対象プログラムの指定
 ##--------------------------------------------------------##
 
-cmd_rsa_main="../../rsa_main_by_pycryptodome.py"
+cmd_rsa_main="../../rsa_main.py"
 cmd_filehash="../../print_FileHash.py"
 
 
@@ -100,13 +100,15 @@ fi
 ##--------------------------------------------------------##
 
 printf "\033[0;33m"
-printf "%-20s:" $keyfile1
+printf "%-20s:\n" $keyfile1
 cat $keyfile1
 
-printf "%-20s:" $keyfile2
+printf "\n"
+printf "%-20s:\n" $keyfile2
 cat $keyfile2
 
 printf "\033[0;39m"
+printf "\n"
 
 
 ##--------------------------------------------------------##

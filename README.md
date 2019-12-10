@@ -1,26 +1,33 @@
 # Example_RSA
 
-PyCryptodomeを使用して暗号化／復号および電子署名の生成／復号を行うプログラムです。
+PyCryptodomeを使用して暗号化／復号および電子署名の生成／復号を行うPytho3用プログラムです。
+あらかじめ pycryptodome をインストールしておいてください。
 
-* 公開鍵で暗号化し、秘密鍵で復号する（暗号化データの送受信）
+```
+pip install pycryptodome
+```
 
-ことができます。
 
-そのほか、元ファイルと復号後のファイルの内容のチェック用に、ファイルのハッシュ値を出力するプログラムとして、
+公開鍵で暗号化し、秘密鍵で復号する（暗号化データの送受信）ことができます。
 
-* ファイルのハッシュ値出力ツール print_FileHash.py
-
+そのほか、元ファイルと復号後のファイルの内容のチェック用に、
+<br>
+ファイルのハッシュ値を出力するプログラムとして、
+<br>
+ファイルのハッシュ値出力ツール print_FileHash.py
+<br>
 を用意しています。
 <br>
 <br>
 
-### 1. 鍵ペア（秘密鍵／公開鍵ファイル）の生成（rsa_main_by_pycryptodome.py）
+### 1. 鍵ペア（秘密鍵／公開鍵ファイル）の生成（rsa_main.py）
 
 公開鍵／秘密鍵を生成します。
+<br>
 生成された鍵は、デフォルトではそれぞれ"key_public.pem", "key_private.pem"というファイルに出力されます。
 
 ```
-$ python rsa_main_by_pycryptodome.py create_key
+$ python rsa_main.py create_key
 Public key filename [key_public.pem]:
 Private key filename [key_private.pem]:
 Create Keys done.
@@ -29,42 +36,49 @@ Create Keys done.
 <br>
 <br>
 
-### 2. 元ファイルから暗号化ファイルを生成する（rsa_main_by_pycryptodome.py）
+### 2. 元ファイルから暗号化ファイルを生成する（rsa_main.py）
 
-"rsa_main_by_pycryptodome.py encrypt"に続けて、暗号化したい元ファイル名、暗号化後のファイル名、公開鍵ファイルを指定して
-rsa_main_by_pycryptodome.pyを実行します。
-
-```
-$ python rsa_main_by_pycryptodome.py encrypt 暗号化したい元ファイル名 暗号化後のファイル名 公開鍵ファイル
-```
-
+"rsa_main.py encrypt"に続けて、
 <br>
+暗号化したい元ファイル名、
 <br>
-
-### 3. 暗号化後のファイルから元のファイルを復号する（rsa_main_by_pycryptodome.py）
-
-"rsa_main_by_pycryptodome.py decrypt"に続けて、暗号化後のファイル名、復号後のファイル名、秘密鍵ファイルを指定して
-rsa_main_by_pycryptodome.pyを実行します。
+暗号化後のファイル名、
+<br>
+公開鍵ファイル
+<br>
+を指定して rsa_main.py を実行します。
 
 ```
-$ python rsa_main_by_pycryptodome.py decrypt 暗号化後の出力結果ファイル 復号後のファイル名 秘密鍵ファイル
+$ python rsa_main.py encrypt 暗号化したい元ファイル名 暗号化後のファイル名 公開鍵ファイル
 ```
 
 <br>
 <br>
 
-### 4. 暗号化と復号の実行例（rsa_main_by_pycryptodome.py）
+### 3. 暗号化後のファイルから元のファイルを復号する（rsa_main.py）
+
+"rsa_main.py decrypt"に続けて、暗号化後のファイル名、復号後のファイル名、秘密鍵ファイルを指定して
+rsa_main.pyを実行します。
+
+```
+$ python rsa_main.py decrypt 暗号化後の出力結果ファイル 復号後のファイル名 秘密鍵ファイル
+```
+
+<br>
+<br>
+
+### 4. 暗号化と復号の実行例（rsa_main.py）
 
 暗号化処理例
 
 ```
-$ python rsa_main_by_pycryptodome.py encrypt image1.jpg testimage.bin key_public.pem
+$ python rsa_main.py encrypt image1.jpg testimage.bin key_public.pem
 ```
 
 復号処理例
 
 ```
-$ python rsa_main_by_pycryptodome.py decrypt testimage.bin image2.jpg key_private.pem
+$ python rsa_main.py decrypt testimage.bin image2.jpg key_private.pem
 ```
 
 <br>
@@ -82,34 +96,55 @@ $ python rsa_main_by_pycryptodome.py decrypt testimage.bin image2.jpg key_privat
 <br>
 
 ### bash版
-* ./TestScripts_mode_bin/bash/repeated_main_mode_bin.sh ... 親側スクリプト
-* ./TestScripts_mode_bin/bash/test_mode_bin.sh ... 鍵の生成、暗号化、復号を１回だけ実行
+* ./TestScripts/bash/repeated_main.sh ... 親側スクリプト
+* ./TestScripts/bash/main.sh ... 鍵の生成、暗号化、復号を１回だけ実行
 <br>
 
 ### PowerShell版
-* ./TestScripts_mode_bin/ps1/repeated_main_mode_bin.ps1 ... 親側スクリプト
-* ./TestScripts_mode_bin/ps1/test_mode_bin.ps1 ... 鍵の生成、暗号化、復号を１回だけ実行
+* ./TestScripts/ps1/repeated_main.ps1 ... 親側スクリプト
+* ./TestScripts/ps1/main.ps1 ... 鍵の生成、暗号化、復号を１回だけ実行
 <br>
 
 
 ### 3-1. 検証用スクリプト実行例(bash版)
 
 ```
-$ cd TestScripts_mode_bin/bash
+$ cd TestScripts/bash
 ```
 
 ```
-$ ./repeated_main_mode_bin.sh
+$ ./repeated_main.sh
 #### encypt(public_key) --> decrypt(private_key) ###
-args = ./repeated_test.sh key1.key key2.key ./original.jpg ./test.bin ./test.jpg
-Execute: python ../../rsa_main_by_pycryptodome.py create_key
-Execute: python ../../rsa_main_by_pycryptodome.py encrypt ./original.jpg ./test.bin key1.key
-Execute: python ../../rsa_main_by_pycryptodome.py decrypt ./test.bin ./test.jpg key2.key
-key1.key            :390703,4562471
-key2.key            :7,4562471
-./original.jpg      :MD5 : 351efe5e4d33d7ca16c86b3137c78011
-./test.jpg          :MD5 : 351efe5e4d33d7ca16c86b3137c78011
-<<Success>>
+args = main.ps1 ./key_public.pem ./key_private.pem ./original.jpg ./test.bin ./test.jpg
+Execute: python ../../rsa_main.py create_key
+Execute: python ../../rsa_main.py encrypt ./original.jpg ./test.bin ./key_public.pem
+Execute: python ../../rsa_main.py decrypt ./test.bin ./test.jpg ./key_private.pem
+./key_public.pem     :
+-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCS+es6BayR6pa8jTgwaolxVNjx
+gcVJMEIdu/x5WAtMSOcXzGJRylcUhMz/ahOkXRrHF1WowkZY+HkW5gj+oweq5DvK
+7NURPp6pv1nhDQTctfUJXn6haEMxphW5k+iABmvBK7tnwVR8f5ZN8B0VQwlnIymt
+aBbNFFjIzoSwKz2QYQIDAQAB
+-----END PUBLIC KEY-----
+./key_private.pem    :
+-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQCS+es6BayR6pa8jTgwaolxVNjxgcVJMEIdu/x5WAtMSOcXzGJR
+ylcUhMz/ahOkXRrHF1WowkZY+HkW5gj+oweq5DvK7NURPp6pv1nhDQTctfUJXn6h
+aEMxphW5k+iABmvBK7tnwVR8f5ZN8B0VQwlnIymtaBbNFFjIzoSwKz2QYQIDAQAB
+AoGAAd2FoHwjc0uio5x4NtcXTPaqdTA0MIhaAnYZD3IwXIS9WBY6NjcG8WX5ExHF
+04tx9E5lwilLCsSGhuWe/hpUFdB4PLP5mDSKRoobkdNWJnUJs5Y8pobdLOaxUbCq
+i3TugcylU6LfKOgQSKamCpQdEj9gVNJAWsaNluX91HjdllUCQQC8ar+MUCOdZYnD
+Z1Bo+IVzn/aCeRBaY5aDm8IqMfD3cYJ/VymrhK+uujxv6F3E2ovy8+3aUXkVAm1V
+2V1c3vutAkEAx7Hnr4dCE0NpRdv2n5fBAJJI0VSCWl9ostYvIGNXlmn5/Yfvifx/
+QySjuCnf14xjeeZuz9A/BP72G7mR14H+BQJAE7DQPdiuMCfJYutsItw+Dhxchbwj
+Ml8P/scLXp+DgEiTi71PNIaUWZ1K7aMKEaWJVKWbaOJ01fY/+OXTdP40rQJBALg7
+8wNm51f8VnBkKlk82Ywcad/udsDHy0FLB3l7DYCwzznPoviMIiEg+Ybb4y7qz4/U
+P6Gsf6etTgNwJhRMUr0CQQCH+tkwLPTwzDPo6cQX5gc1h3jkjMXvGXZBv5bCqxJQ
+b643I6x0A0piUV+co6PNwEqzoGS4GDThbNOLDrOpooC/
+-----END RSA PRIVATE KEY-----
+./original.jpg       MD5 : 351efe5e4d33d7ca16c86b3137c78011
+./test.jpg           MD5 : 351efe5e4d33d7ca16c86b3137c78011
+<<Sucess>>
    ...
    ...
 ```
@@ -125,16 +160,36 @@ PS D:\work\Example_RSA> cd .\TestScripts\ps1
 
 ```
 PS D:\work\Example_RSA\TestScripts\ps1>.\repeated_main.ps1
-#### encypt(public_key) --> decrypt(private_key) ###
-args = repeated_test.ps1 ./key1.key ./key2.key ./original.jpg ./test.bin ./test.jpg
-Execute: python ../../rsa_main_by_pycryptodome.py create_key
-Execute: python ../../rsa_main_by_pycryptodome.py encrypt ./original.jpg ./test.bin ./key1.key
-Execute: python ../../rsa_main_by_pycryptodome.py decrypt ./test.bin ./test.jpg ./key2.key
-./key1.key           : 5,6107737
-./key2.key           : 813701,6107737
-./original.jpg       MD5 : 351efe5e4d33d7ca16c86b3137c78011
-./test.jpg           MD5 : 351efe5e4d33d7ca16c86b3137c78011
-<<Sucess>>
+args = ./main.sh key_public.pem key_private.pem ./original.jpg ./test.bin ./test.jpg
+Execute: python ../../rsa_main.py create_key
+Execute: python ../../rsa_main.py encrypt ./original.jpg ./test.bin key_public.pem
+Execute: python ../../rsa_main.py decrypt ./test.bin ./test.jpg key_private.pem
+key_public.pem      :
+-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqxvLwdt6FTTdR2NL+QF2dfGfj
+Qu9301SIf7vzQB8TZWecFtasjaN4OVlAKBUUj3USa1WXjFvIs1rbvJi9UaX76O0B
+goJJcv63YHFttrQdZi30U7xrJ2PWiKxaRwcvbEWsYsDVyOeJ60aLIRg100QZ/9ka
+IEw+mDyTq2owU6rf8QIDAQAB
+-----END PUBLIC KEY-----
+key_private.pem     :
+-----BEGIN RSA PRIVATE KEY-----
+MIICWwIBAAKBgQCqxvLwdt6FTTdR2NL+QF2dfGfjQu9301SIf7vzQB8TZWecFtas
+jaN4OVlAKBUUj3USa1WXjFvIs1rbvJi9UaX76O0BgoJJcv63YHFttrQdZi30U7xr
+J2PWiKxaRwcvbEWsYsDVyOeJ60aLIRg100QZ/9kaIEw+mDyTq2owU6rf8QIDAQAB
+AoGAAKU36OVWGyD9glvLFRJzHttH9lT4mMjsGpxSi/JvNOS6wGQP3M/XAgjzBtup
+LvGx5gCXtVVDvDeoxp/kAdOtuxim5s4gK3G2ivuUgMEe+PSm5CW3lLJpJSM+HUof
+W5a0qLtlsPKrEPm1ZnamNzXkqvWFaW7uunL79APdlXLliC0CQQDKfpN+v23ujD0A
+/kcQgd1UqWuyJtuPOUKrCURRIapLH6kj2DfGU88Ap3sbealutv+YaLDQIlRsPaba
+kCTgbfytAkEA1+bnyqNowZEpgBCR13sVKqjujJ8TKNxktPhCSLvcg6wDfJkGTp2e
+Zd/Fq/+AN3giaOfGS+4dHelbB7/djja01QJAbRcyCQfChtCAkQdsa6U7A0Be59Rt
+VsTHePN+HaNgZiaBbfEvYyaFj9mqxguOTzpBiu9jyk2kY8f3Gyqq40n95QJAOX43
+w3J4dvNdBcljzOnt3QpXXAMQaxUljDuACzZbpoSr+QYW8+BtSdupHABR+HN5Vk5C
+M/4Yqtp1bz7clP5kcQJAHhUG7rAJk6mmU3sBKlXiqac/hzARBlcne/UP23kc0RqI
+3i32dKJDQKdbj+5YWS0pjGo7iOqbppe/JBp7cMfQmQ==
+-----END RSA PRIVATE KEY-----
+./original.jpg      :MD5 : 351efe5e4d33d7ca16c86b3137c78011
+./test.jpg          :MD5 : 351efe5e4d33d7ca16c86b3137c78011
+<<Success>>
     ....
     ....
 ```

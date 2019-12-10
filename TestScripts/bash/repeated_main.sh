@@ -1,8 +1,8 @@
 #!/bin/bash
 
-cmd="./test_mode_bin.sh"
-keyfile1="public.key"
-keyfile2="private.key"
+cmd="./main.sh"
+keyfile1="key_public.pem"
+keyfile2="key_private.pem"
 file1="./original.jpg"
 file2="./test.bin"
 file3="./test.jpg"

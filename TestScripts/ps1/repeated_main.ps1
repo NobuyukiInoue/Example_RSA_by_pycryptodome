@@ -1,4 +1,4 @@
-$cmd = "./test_mode_bin.ps1"
+$cmd = "./main.ps1"
 $keyfile1 = "./key_public.pem"
 $keyfile2 = "./key_private.pem"
 $file1 = "./original.jpg"

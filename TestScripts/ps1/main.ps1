@@ -29,7 +29,7 @@ else {
 ## ŒŸØ‘ÎÛƒvƒƒOƒ‰ƒ€‚Ìw’è
 ##--------------------------------------------------------##
 
-$cmd_rsa_main = "../../rsa_main_by_pycryptodome.py"
+$cmd_rsa_main = "../../rsa_main.py"
 $cmd_filehash = "../../print_FileHash.py"
 
 
