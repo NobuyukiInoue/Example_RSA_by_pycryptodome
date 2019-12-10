@@ -42,6 +42,27 @@ Create Keys done.
 <br>
 <br>
 
+ちなみに、鍵の中身は、OpenSSLコマンドで確認することができます。<br>
+<br>
+* ASN1形式
+
+```
+$ openssl asn1parse -in key_private.pem
+...
+...
+$ openssl asn1parse -in key_public.pem
+...
+...
+```
+$ openssl rsa -in key_private.pem -text -noout
+...
+...
+$ openssl rsa -in key_public.pem -pubin -text -noout
+...
+...
+```
+
+
 ### 2. 元ファイルから暗号化ファイルを生成する（rsa_main.py）
 
 "rsa_main.py encrypt"に続けて、<br>
