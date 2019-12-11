@@ -149,13 +149,13 @@ $ python rsa_main.py verify 元ファイル名 電子署名ファイル名 公�
 ### 3-3. 電子署名の生成と照合の実行例
 
 
-* 暗号化処理例
+* 電子署名ファイルの生成
 
 ```
 $ python rsa_main.py signature image1.jpg image1.sig key_private.pem
 ```
 
-* 復号処理例
+* 電子署名ファイルの照合
 
 ```
 $ python rsa_main.py verify image1.jpg image1.sig key_public.pem
