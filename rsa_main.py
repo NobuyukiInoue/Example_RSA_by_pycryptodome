@@ -14,6 +14,8 @@ from my_modules.getch import getch
 
 
 def main():
+    """メイン処理"""
+
     argv = sys.argv
     argc = len(argv)
 
@@ -55,6 +57,8 @@ def main():
 
 
 def exit_msg(argv0):
+    """使用例を表示する"""
+
     print("Usage: python %s [encrypt | decrypt | createkey | signature | verify] [変換前ファイル] [変換後ファイル] [公開鍵ファイル | 秘密鍵ファイル]" %argv0)
     print("example1) -- createkey\n"
             "python rsa_main_mode_bin.py createkey\n\n"
@@ -70,6 +74,9 @@ def exit_msg(argv0):
 
 
 def createkey(n):
+    """ 公開鍵と秘密鍵を生成"""
+    
+    # 公開鍵ファイル名の指定
     print("Public key filename [key_public.pem]:", end = '')
     public_key_filename = input()
     if public_key_filename == "":
@@ -77,6 +84,7 @@ def createkey(n):
 
     check_exists(public_key_filename)
 
+    # 秘密鍵ファイル名の指定
     print("Private key filename [key_private.pem]:", end = '')
     private_key_filename = input()
     if private_key_filename == "":
@@ -84,7 +92,6 @@ def createkey(n):
 
     check_exists(private_key_filename)
 
-    """公開鍵と秘密鍵を生成"""
     # 秘密鍵の生成
     private_key = RSA.generate(n)
     with open(private_key_filename, "w") as f:
@@ -99,7 +106,11 @@ def createkey(n):
 
 
 def check_exists(filename):
+    """ファイルの存在をチェックする関数"""
+
+    # ファイルの存在をチェック
     if os.path.exists(filename):
+        # 上書きの可否を確認
         firstKey = ''
         while (firstKey != 'Y' and firstKey != 'N'):
             print("\n%s is exists. overwrite? (Y/N):" %filename, end = "")
@@ -113,7 +124,9 @@ def check_exists(filename):
 
 
 def read_key(keyfilename):
-    """鍵ファイルの読み込み"""
+    """鍵ファイルの読み込み、読み込んだ鍵を返す"""
+
+    # 指定した鍵ファイルを読み込む
     with open(keyfilename, "br") as f:
         pem_data = f.read()
         key = RSA.import_key(pem_data)
@@ -122,10 +135,12 @@ def read_key(keyfilename):
 
 
 def encrypt_binary(keyfile, read_file, write_file):
-    """鍵ファイルから公開鍵を読み込む"""
+    """ファイルの暗号化処理"""
+
+    # 鍵ファイルから公開鍵を読み込む
     public_key = read_key(keyfile)
 
-    """平文ファイルを読み込む"""
+    # 平文ファイルを読み込む
     f = open(read_file, "rb")
     plain_bytes = []
     while True:
@@ -135,23 +150,25 @@ def encrypt_binary(keyfile, read_file, write_file):
         plain_bytes.append(d)
     f.close
 
-    """暗号化"""
+    # 公開鍵で暗号化
     public_cipher = PKCS1_OAEP.new(public_key)
     encrypted_bytes = []
     for block in plain_bytes:
         encrypted_bytes.append(public_cipher.encrypt(block))
 
-    """結果の出力"""
+    # 結果をファイルに出力する
     with open(write_file, 'wb') as f:
         for d in encrypted_bytes:
             f.write(d)
 
 
 def decrypt_binary(keyfile, read_file, write_file):
-    """鍵ファイルから秘密鍵を読み込む"""
+    """ファイルの復号処理"""
+
+    # 鍵ファイルから秘密鍵を読み込む
     private_key = read_key(keyfile)
 
-    """暗号文ファイルを読み込む"""
+    # 暗号化後のファイルを読み込む
     f = open(read_file, "rb")
     encrypted_bytes = []
     while True:
@@ -161,53 +178,57 @@ def decrypt_binary(keyfile, read_file, write_file):
         encrypted_bytes.append(d)
     f.close
 
-    """復号化"""
+    # 秘密鍵で復号
     private_cipher = PKCS1_OAEP.new(private_key)
     decrypted_bytes = []
     for block in encrypted_bytes:
         decrypted_bytes.append(private_cipher.decrypt(block))
 
-    """結果の出力"""
+    # 結果をファイルに出力する
     with open(write_file, 'wb') as f:
         for d in decrypted_bytes:
             f.write(d)
 
 def create_signature(private_keyfile, source_file, signature_file):
-    """鍵ファイルから秘密鍵を読み込む"""
+    """電子署名を生成する"""
+
+    # 鍵ファイルから秘密鍵を読み込む
     private_key = read_key(private_keyfile)
 
-    """ファイルの内容を読み込む"""
+    # ファイルの内容を読み込む
     f = open(source_file, "rb")
     plain_bytes = f.read()
     f.close
 
-    """ファイルハッシュを求める"""
+    # ファイルハッシュを求める
     h1 = SHA256.new(plain_bytes)
     print("{0}[SHA256] : {1}".format(source_file, hashlib.sha256(plain_bytes).hexdigest()))
 #   print("{0}[SHA256] : {1}".format(source_file, vars(h1)))
 
-    """署名を生成"""
+    # 電子署名を生成
     signature = pkcs1_15.new(private_key).sign(h1)
 
-    """結果の出力"""
+    # 結果をファイルに出力する
     with open(signature_file, 'wb') as f:
         f.write(signature)
 
 def verify_signature(public_keyfile, source_file, signature_file):
-    """鍵ファイルから秘密鍵を読み込む"""
+    """電子署名の妥当性をチェックする"""
+
+    # 鍵ファイルから秘密鍵を読み込む
     public_key = read_key(public_keyfile)
 
-    """ファイルの内容を読み込む"""
+    # ファイルの内容を読み込む
     f = open(source_file, "rb")
     plain_bytes = f.read()
     f.close
 
-    """ファイルハッシュを求める"""
+    # ファイルハッシュを求める
     h1 = SHA256.new(plain_bytes)
     print("{0}[SHA256] : {1}".format(source_file, hashlib.sha256(plain_bytes).hexdigest()))
 #   print("{0}[SHA256] : {1}".format(source_file, vars(h1)))
 
-    """署名を読み込む"""
+    # 電子署名ファイルを読み込む
     f = open(signature_file, "rb")
     signature = f.read()
     f.close
