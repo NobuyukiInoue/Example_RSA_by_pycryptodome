@@ -22,7 +22,7 @@
             ]
         },
         {
-            "name": "Python: rsa_main_mode_bin.py encrypt1",
+            "name": "Python: rsa_main.py encrypt1",
             "type": "python",
             "request": "launch",
             "program": "${file}",
@@ -35,7 +35,7 @@
             ]
         },
         {
-            "name": "Python: rsa_main_mode_bin.py decrypt1",
+            "name": "Python: rsa_main.py decrypt1",
             "type": "python",
             "request": "launch",
             "program": "${file}",
@@ -48,7 +48,7 @@
             ]
         },
         {
-            "name": "Python: rsa_main_mode_bin.py encrypt2",
+            "name": "Python: rsa_main.py encrypt2",
             "type": "python",
             "request": "launch",
             "program": "${file}",
@@ -61,7 +61,7 @@
             ]
         },
         {
-            "name": "Python: rsa_main_mode_bin.py decrypt2",
+            "name": "Python: rsa_main.py decrypt2",
             "type": "python",
             "request": "launch",
             "program": "${file}",
@@ -70,6 +70,32 @@
                 "decrypt",
                 "test.bin",
                 "test.jpg",
+                "key_private.pem"
+            ]
+        },
+        {
+            "name": "Python: rsa_main.py signature",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args":[
+                "signature",
+                "./TestScripts/ps1/original.jpg",
+                "test.sig",
+                "key_private.pem"
+            ]
+        },
+        {
+            "name": "Python: rsa_main.py verify",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args":[
+                "verify",
+                "./TestScripts/ps1/original.jpg",
+                "test.sig",
                 "key_private.pem"
             ]
         },

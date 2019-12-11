@@ -4,8 +4,10 @@ import os
 import struct
 import sys
 
-from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
+from Crypto.Hash import SHA256
+from Crypto.PublicKey import RSA
+from Crypto.Signature import pkcs1_15
 from my_modules.getch import getch
 
 
@@ -18,39 +20,50 @@ def main():
 
     if argv[1] == "createkey" or argv[1] == "key":
         createkey(1024)
-    else:
-        if argc < 5:           
-            exit_msg(argv[0])
+        exit(0)
 
-        r_file = argv[2]
-        if not os.path.exists(r_file):
-            print("%s not found." %r_file)
-            exit(0)
+    if argc < 5:           
+        exit_msg(argv[0])
 
-        w_file = argv[3]
+    r_file = argv[2]
+    if not os.path.exists(r_file):
+        print("%s not found." %r_file)
+        exit(0)
+
+    w_file = argv[3]
+
+    if argv[1] != "verify" and argv[1] != "vrf":
         check_exists(w_file)
 
-        keyfile = argv[4]
-        if not os.path.exists(keyfile):
-            print("%s not found." %keyfile)
-            exit(0)
+    keyfile = argv[4]
+    if not os.path.exists(keyfile):
+        print("%s not found." %keyfile)
+        exit(0)
 
-        if argv[1] == "encrypt" or argv[1] == "enc":
-            encrypt_binary(keyfile, r_file, w_file)
-        elif argv[1] == "decrypt" or argv[1] == "dec":
-            decrypt_binary(keyfile, r_file, w_file)
-        else:
-            exit_msg(argv[0])
+    if argv[1] == "encrypt" or argv[1] == "enc":
+        encrypt_binary(keyfile, r_file, w_file)
+    elif argv[1] == "decrypt" or argv[1] == "dec":
+        decrypt_binary(keyfile, r_file, w_file)
+    elif argv[1] == "signature" or argv[1] == "sig":
+        create_signature(keyfile, r_file, w_file)
+    elif argv[1] == "verify" or argv[1] == "vrf":
+        verify_signature(keyfile, r_file, w_file)
+    else:
+        exit_msg(argv[0])
 
 
 def exit_msg(argv0):
-    print("Usage: python %s [encrypt | decrypt | createkey] [変換前ファイル] [変換後ファイル] [公開鍵ファイル | 秘密鍵ファイル]" %argv0)
+    print("Usage: python %s [encrypt | decrypt | createkey | signature | verify] [変換前ファイル] [変換後ファイル] [公開鍵ファイル | 秘密鍵ファイル]" %argv0)
     print("example1) -- createkey\n"
             "python rsa_main_mode_bin.py createkey\n\n"
             "example2) -- encrypt"
-            "python rsa_main_mode_bin.py encrypt file1 file2 key_public.pem\n\n"
+            "python rsa_main_mode_bin.py encrypt source_file encryped_file key_public.pem\n\n"
             "example3) -- decrypt"
-            "python rsa_main_mode_bin.py decrypt file2 file1 key_private.pem\n\n")
+            "python rsa_main_mode_bin.py decrypt encrypted_file decrypted_file key_private.pem\n\n"
+            "example4) -- signature"
+            "python rsa_main_mode_bin.py signature source_file signature_file key_private.pem\n\n"
+            "example5) -- verify"
+            "python rsa_main_mode_bin.py verify source_file signature_file key_public.pem\n\n")
     exit(0)
 
 
@@ -156,6 +169,69 @@ def decrypt_binary(keyfile, read_file, write_file):
     with open(write_file, 'wb') as f:
         for d in decrypted_bytes:
             f.write(d)
+
+def create_signature(private_keyfile, source_file, signature_file):
+    """鍵ファイルから秘密鍵を読み込む"""
+    private_key = read_key(private_keyfile)
+
+    """ファイルの内容を読み込む"""
+    f = open(source_file, "rb")
+    plain_bytes = f.read(1)
+    while True:
+        d = f.read(1)
+        if len(d) == 0:
+            break
+        plain_bytes += d
+    f.close
+
+    """ファイルハッシュを求める"""
+    h1 = SHA256.new(plain_bytes)
+
+    """署名を生成"""
+    signature = pkcs1_15.new(private_key).sign(h1)
+
+    """結果の出力"""
+    with open(signature_file, 'wb') as f:
+        f.write(signature)
+
+def verify_signature(public_keyfile, source_file, signature_file):
+    """鍵ファイルから秘密鍵を読み込む"""
+    public_key = read_key(public_keyfile)
+
+    """ファイルの内容を読み込む"""
+    f = open(source_file, "rb")
+    plain_bytes = f.read(1)
+    while True:
+        d = f.read(1)
+        if len(d) == 0:
+            break
+        plain_bytes += d
+    f.close
+
+    """ファイルハッシュを求める"""
+    h1 = SHA256.new(plain_bytes)
+
+    """署名を読み込む"""
+    f = open(signature_file, "rb")
+    signature = f.read(1)
+    while True:
+        d = f.read(1)
+        if len(d) == 0:
+            break
+        signature += d
+    f.close
+
+    # 公開鍵から妥当性を検証
+    try:
+        pkcs1_15.new(public_key).verify(h1, signature)
+        verified = True
+    except ValueError:
+        verified = False
+
+    if verified:
+        print("Verify OK")
+    else:
+        print("Verify NG.")
 
 
 if __name__ == "__main__":

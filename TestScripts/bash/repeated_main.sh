@@ -1,16 +1,17 @@
 #!/bin/bash
 
 cmd="./main.sh"
-keyfile1="key_public.pem"
-keyfile2="key_private.pem"
-file1="./original.jpg"
-file2="./test.bin"
-file3="./test.jpg"
+keyfile1="./keys/key_public.pem"
+keyfile2="./keys/key_private.pem"
+file1="./sample/original.jpg"
+file2="./sample/test.bin"
+file3="./sample/test.jpg"
+file4="./sample/test.sig"
 
 loopCount=10
 
-echo -e "\033[0;35m#### encrypt(public_key) --> decrypt(private_key) ###\033[0;39m"
+echo -e "#### encrypt(public_key) --> decrypt(private_key) ###"
 
 for ((i=0; i < $loopCount; i++)); do
-    $cmd $keyfile1 $keyfile2 $file1 $file2 $file3
+    $cmd $keyfile1 $keyfile2 $file1 $file2 $file3 $file4
 done

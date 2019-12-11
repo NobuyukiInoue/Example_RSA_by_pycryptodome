@@ -21,7 +21,7 @@ def main():
     if argc >= 3:
         algorithm = argv[2].upper()
     else:
-        algorithm = "MD5"
+        algorithm = "SHA256"
 
     if algorithm == "MD5":
         result = hashlib.md5(BinaryData).hexdigest()

@@ -1,27 +1,15 @@
-param($keyfile1, $keyfile2, $file1, $file2, $file3, $mode)
+param($keyfile_public, $keyfile_private, $file_source, $file_encrypted, $file_decrypted, $file_signature)
 
-Write-Host "args ="$MyInvocation.MyCommand.Name $keyfile1 $keyfile2 $file1 $file2 $file3 $mode
+Write-Host "args ="$MyInvocation.MyCommand.Name $keyfile_public $keyfile_private $file_source $file_encrypted $file_decrypted $file_signature
 
 ##--------------------------------------------------------##
 ## 引数チェック
 ##--------------------------------------------------------##
 
-if (-Not($keyfile1) -Or -Not($keyfile2) -Or -Not($file1) -Or -Not($file2) -Or -Not($file3)) {
-    Write-Host $keyfile1 $keyfile2 $file1 $file2 $file3
-    Write-Host "Usage :"$MyInvocation.MyCommand.Name" public_key private_key org_file encrypted_file decrypted_file [mode]"
+if (-Not($keyfile_public) -Or -Not($keyfile_private) -Or -Not($file_source) -Or -Not($file_encrypted) -Or -Not($file_decrypted) -Or -Not($file_signature)) {
+    Write-Host $keyfile_public $keyfile_private $file_source $file_encrypted $file_decrypted $file_signature
+    Write-Host "Usage :"$MyInvocation.MyCommand.Name" public_key private_key org_file encrypted_file decrypted_file signature_file [mode]"
     exit
-}
-
-if (-Not($mode)) {
-    $mode = $TRUE
-}
-else {
-    if ($mode -match "TRUE" -Or $mode -match "True" -Or $mode -match "true") {
-        $mode = $TRUE
-    }
-    else {
-        $mode = $FALSE
-    }
 }
 
 
@@ -37,20 +25,24 @@ $cmd_filehash = "../../print_FileHash.py"
 ## 対象ファイルの事前削除
 ##--------------------------------------------------------##
 
-if (Test-Path $keyfile1) {
-    Remove-Item $keyfile1
+if (Test-Path $keyfile_public) {
+    Remove-Item $keyfile_public
 }
 
-if (Test-Path $keyfile2) {
-    Remove-Item $keyfile2
+if (Test-Path $keyfile_private) {
+    Remove-Item $keyfile_private
 }
 
-if (Test-Path $file2) {
-    Remove-Item $file2
+if (Test-Path $file_encrypted) {
+    Remove-Item $file_encrypted
 }
 
-if (Test-Path $file3) {
-    Remove-Item $file3
+if (Test-Path $file_decrypted) {
+    Remove-Item $file_decrypted
+}
+
+if (Test-Path $file_signature) {
+    Remove-Item $file_signature
 }
 
 
@@ -58,7 +50,7 @@ if (Test-Path $file3) {
 ## 公開鍵／秘密鍵ファイルの生成
 ##--------------------------------------------------------##
 
-$keyfiles = $keyfile1 + "`n" + $keyfile2 + "`n"
+$keyfiles = $keyfile_public + "`n" + $keyfile_private + "`n"
 
 Write-Host "Execute: python"$cmd_rsa_main" createkey"
 $keyfiles | python $cmd_rsa_main createkey > $NULL
@@ -68,53 +60,57 @@ $keyfiles | python $cmd_rsa_main createkey > $NULL
 ## 暗号化処理
 ##--------------------------------------------------------##
 
-if ($mode) {
-    ## 公開鍵で暗号化
-    Write-Host "Execute: python $cmd_rsa_main encrypt $file1 $file2 $keyfile1"
-    python $cmd_rsa_main encrypt $file1 $file2 $keyfile1
-}
-else {
-    ## 秘密鍵で暗号化
-    Write-Host "Execute: python $cmd_rsa_main encrypt $file1 $file2 $keyfile2"
-    python $cmd_rsa_main encrypt $file1 $file2 $keyfile2
-}
+## 公開鍵で暗号化
+Write-Host "Execute: python $cmd_rsa_main encrypt $file_source $file_encrypted $keyfile_public"
+python $cmd_rsa_main encrypt $file_source $file_encrypted $keyfile_public
+
+
+##--------------------------------------------------------##
+## 電子署名の生成
+##--------------------------------------------------------##
+
+## 電子署名の生成
+Write-Host "Execute: python $cmd_rsa_main signature $file_source $file_signature $keyfile_private"
+python $cmd_rsa_main signature $file_source $file_signature $keyfile_private
 
 
 ##--------------------------------------------------------##
 ## 復号処理
 ##--------------------------------------------------------##
 
-if ($mode) {
-    ## 秘密鍵で復号
-    Write-Host "Execute: python $cmd_rsa_main decrypt $file2 $file3 $keyfile2"
-    python $cmd_rsa_main decrypt $file2 $file3 $keyfile2
-}
-else {
-    ## 公開鍵で復号
-    Write-Host "Execute: python $cmd_rsa_main decrypt $file2 $file3 $keyfile1"
-    python $cmd_rsa_main decrypt $file2 $file3 $keyfile1
-}
+## 秘密鍵で復号
+Write-Host "Execute: python $cmd_rsa_main decrypt $file_encrypted $file_decrypted $keyfile_private"
+python $cmd_rsa_main decrypt $file_encrypted $file_decrypted $keyfile_private
+
+
+##--------------------------------------------------------##
+## 電子署名の照合
+##--------------------------------------------------------##
+
+## 電子署名の照合
+Write-Host "Execute: python $cmd_rsa_main verify $file_source $file_signature $keyfile_public"
+python $cmd_rsa_main verify $file_source $file_signature $keyfile_public
 
 
 ##--------------------------------------------------------##
 ## 鍵ファイルの内容を表示
 ##--------------------------------------------------------##
 
-Write-Host $keyfile1.PadRight(20)":" -ForegroundColor Yellow
-Get-Content $keyfile1
+Write-Host $keyfile_public.PadRight(20)":" -ForegroundColor Yellow
+Get-Content $keyfile_public
 
-Write-Host $keyfile2.PadRight(20)":" -ForegroundColor Yellow
-Get-Content $keyfile2
+Write-Host $keyfile_private.PadRight(20)":" -ForegroundColor Yellow
+Get-Content $keyfile_private
 
 
 ##--------------------------------------------------------##
 ## 暗号化前ファイルと復号後ファイルのハッシュ値を出力する
 ##--------------------------------------------------------##
 
-$result1 = python $cmd_filehash $file1
-$result3 = python $cmd_filehash $file3
-Write-Host $file1.PadRight(20)$result1 -ForegroundColor Cyan
-Write-Host $file3.PadRight(20)$result3 -ForegroundColor Cyan
+$result1 = python $cmd_filehash $file_source
+$result3 = python $cmd_filehash $file_decrypted
+Write-Host $file_source.PadRight(20)$result1 -ForegroundColor Cyan
+Write-Host $file_decrypted.PadRight(20)$result3 -ForegroundColor Cyan
 
 
 ##--------------------------------------------------------##
@@ -130,10 +126,10 @@ else {
     ##--------------------------------##
     ## 鍵ファイルをバックアップ
     ##--------------------------------##
-    $timestamp1=$(Get-ItemProperty $keyfile1).LastWriteTime.ToString('yyyyMMdd_HHmmss')
-    $timestamp2=$(Get-ItemProperty $keyfile2).LastWriteTime.ToString('yyyyMMdd_HHmmss')
-    $keyfile_backup1 = $keyfile1 + ".err_" + $timestamp1 + ".txt"
-    $keyfile_backup2 = $keyfile2 + ".err_" + $timestamp2 + ".txt"
-    Copy-Item $keyfile1 $keyfile_backup1
-    Copy-Item $keyfile2 $keyfile_backup2
+    $timestamp1=$(Get-ItemProperty $keyfile_public).LastWriteTime.ToString('yyyyMMdd_HHmmss')
+    $timestamp2=$(Get-ItemProperty $keyfile_private).LastWriteTime.ToString('yyyyMMdd_HHmmss')
+    $keyfile_backup1 = $keyfile_public + ".err_" + $timestamp1 + ".txt"
+    $keyfile_backup2 = $keyfile_private + ".err_" + $timestamp2 + ".txt"
+    Copy-Item $keyfile_public $keyfile_backup1
+    Copy-Item $keyfile_private $keyfile_backup2
 }

@@ -6,22 +6,17 @@
 
 printf "args = ${0} ${1} ${2} ${3} ${4} ${5} ${6}\n"
 
-if [ $# -lt 5 ]; then
-    printf "Usage) ${0} keyfile1 keyfile2 org_file encrypted_file decrypted_file [mode]\n"
+if [ $# -lt 6 ]; then
+    printf "Usage) ${0} keyfile_public keyfile_private org_file encrypted_file decrypted_file file_signature\n"
     exit
 fi
 
-keyfile1=${1}
-keyfile2=${2}
-file1=${3}
-file2=${4}
-file3=${5}
-
-if [ $# -ge 6 ]; then
-    mode=${6}
-else
-    mode=1
-fi
+keyfile_public=${1}
+keyfile_private=${2}
+file_source=${3}
+file_encrypted=${4}
+file_decrypted=${5}
+file_signature=${6}
 
 
 ##--------------------------------------------------------##
@@ -36,20 +31,24 @@ cmd_filehash="../../print_FileHash.py"
 ## 対象ファイルの事前削除
 ##--------------------------------------------------------##
 
-if [ -f $keyfile1 ]; then
-    rm $keyfile1
+if [ -f $keyfile_public ]; then
+    rm $keyfile_public
 fi
 
-if [ -f $keyfile2 ]; then
-    rm $keyfile2
+if [ -f $keyfile_private ]; then
+    rm $keyfile_private
 fi
 
-if [ -f $file2 ]; then
-    rm $file2
+if [ -f $file_encrypted ]; then
+    rm $file_encrypted
 fi
 
-if [ -f $file3 ]; then
-    rm $file3
+if [ -f $file_decrypted ]; then
+    rm $file_decrypted
+fi
+
+if [ -f $file_signature ]; then
+    rm $file_signature
 fi
 
 
@@ -60,8 +59,8 @@ fi
 printf "Execute: python $cmd_rsa_main createkey\n"
 
 python $cmd_rsa_main createkey 1> /dev/null << EOS
-$keyfile1
-$keyfile2
+$keyfile_public
+$keyfile_private
 EOS
 
 
@@ -69,30 +68,36 @@ EOS
 ## 暗号化処理
 ##--------------------------------------------------------##
 
-if [ $mode -eq 1 ]; then
-    ## 公開鍵で暗号化
-    printf "Execute: python $cmd_rsa_main encrypt $file1 $file2 $keyfile1\n"
-    python $cmd_rsa_main encrypt $file1 $file2 $keyfile1
-else
-    ## 秘密鍵で暗号化
-    printf "Execute: python $cmd_rsa_main encrypt $file1 $file2 $keyfile2\n"
-    python $cmd_rsa_main encrypt $file1 $file2 $keyfile2
-fi
+## 公開鍵で暗号化
+printf "Execute: python $cmd_rsa_main encrypt $file_source $file_encrypted $keyfile_public\n"
+python $cmd_rsa_main encrypt $file_source $file_encrypted $keyfile_public
+
+
+##--------------------------------------------------------##
+## 電子署名の生成
+##--------------------------------------------------------##
+
+## 公開鍵で暗号化
+printf "Execute: python $cmd_rsa_main signature $file_source $file_signature $keyfile_private\n"
+python $cmd_rsa_main signature $file_source $file_signature $keyfile_private
 
 
 ##--------------------------------------------------------##
 ## 復号処理
 ##--------------------------------------------------------##
 
-if [ $mode -eq 1 ]; then
-    ## 秘密鍵で復号
-    printf "Execute: python $cmd_rsa_main decrypt $file2 $file3 $keyfile2\n"
-    python $cmd_rsa_main decrypt $file2 $file3 $keyfile2
-else
-    ## 公開鍵で復号
-    printf "Execute: python $cmd_rsa_main decrypt $file2 $file3 $keyfile1\n"
-    python $cmd_rsa_main decrypt $file2 $file3 $keyfile1
-fi
+## 秘密鍵で復号
+printf "Execute: python $cmd_rsa_main decrypt $file_encrypted $file_decrypted $keyfile_private\n"
+python $cmd_rsa_main decrypt $file_encrypted $file_decrypted $keyfile_private
+
+
+##--------------------------------------------------------##
+## 電子署名の照合
+##--------------------------------------------------------##
+
+## 秘密鍵で暗号化
+printf "Execute: python $cmd_rsa_main verify $file_source $file_signature $keyfile_public\n"
+python $cmd_rsa_main verify $file_source $file_signature $keyfile_public
 
 
 ##--------------------------------------------------------##
@@ -100,12 +105,12 @@ fi
 ##--------------------------------------------------------##
 
 printf "\033[0;33m"
-printf "%-20s:\n" $keyfile1
-cat $keyfile1
+printf "%-20s:\n" $keyfile_public
+cat $keyfile_public
 
 printf "\n"
-printf "%-20s:\n" $keyfile2
-cat $keyfile2
+printf "%-20s:\n" $keyfile_private
+cat $keyfile_private
 
 printf "\033[0;39m"
 printf "\n"
@@ -115,13 +120,13 @@ printf "\n"
 ## 暗号化前ファイルと復号後ファイルのハッシュ値を出力する
 ##--------------------------------------------------------##
 
-result1=`python $cmd_filehash $file1`
-result3=`python $cmd_filehash $file3`
+result1=`python $cmd_filehash $file_source`
+result3=`python $cmd_filehash $file_decrypted`
 
 printf "\033[0;36m"
-printf "%-20s:" $file1
+printf "%-20s:" $file_source
 printf "$result1\n"
-printf "%-20s:" $file3
+printf "%-20s:" $file_decrypted
 printf "$result3\n"
 printf "\033[0;39m"
 
@@ -136,8 +141,8 @@ else
     printf "\033[0;31m<<Failed>>\033[0;39m\n"
 
     ## 鍵ファイルをバックアップ
-    timestamp1=`date +%Y%m%d%H%M%S -r $keyfile1`
-    timestamp2=`date +%Y%m%d%H%M%S -r $keyfile2`
-    cp -p $keyfile1 $keyfile1.err_$timestamp1".txt"
-    cp -p $keyfile2 $keyfile2.err_$timestamp2".txt"
+    timestamp1=`date +%Y%m%d%H%M%S -r $keyfile_public`
+    timestamp2=`date +%Y%m%d%H%M%S -r $keyfile_private`
+    cp -p $keyfile_public $keyfile_public.err_$timestamp1".txt"
+    cp -p $keyfile_private $keyfile_private.err_$timestamp2".txt"
 fi
