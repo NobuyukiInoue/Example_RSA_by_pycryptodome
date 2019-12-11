@@ -124,9 +124,9 @@ result1=`python $cmd_filehash $file_source`
 result3=`python $cmd_filehash $file_decrypted`
 
 printf "\033[0;36m"
-printf "%-20s:" $file_source
+printf "%-25s:" $file_source
 printf "$result1\n"
-printf "%-20s:" $file_decrypted
+printf "%-25s:" $file_decrypted
 printf "$result3\n"
 printf "\033[0;39m"
 

@@ -12,13 +12,13 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Python: Create_Key",
+            "name": "Python: CreateKey",
             "type": "python",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
             "args":[
-                "create_key"
+                "createkey"
             ]
         },
         {
@@ -55,7 +55,7 @@
             "console": "integratedTerminal",
             "args":[
                 "encrypt",
-                "./base64_work/image.jpg",
+                "./TestScripts/ps1/sample/original.jpg",
                 "test.bin",
                 "key_public.pem"
             ]
@@ -81,7 +81,7 @@
             "console": "integratedTerminal",
             "args":[
                 "signature",
-                "./TestScripts/ps1/original.jpg",
+                "./TestScripts/ps1/sample/original.jpg",
                 "test.sig",
                 "key_private.pem"
             ]
@@ -94,7 +94,7 @@
             "console": "integratedTerminal",
             "args":[
                 "verify",
-                "./TestScripts/ps1/original.jpg",
+                "./TestScripts/ps1/sample/original.jpg",
                 "test.sig",
                 "key_private.pem"
             ]

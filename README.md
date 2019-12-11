@@ -199,8 +199,10 @@ args = ./main.sh ./keys/key_public.pem ./keys/key_private.pem ./sample/original.
 Execute: python ../../rsa_main.py createkey
 Execute: python ../../rsa_main.py encrypt ./sample/original.jpg ./sample/test.bin ./keys/key_public.pem
 Execute: python ../../rsa_main.py signature ./sample/original.jpg ./sample/test.sig ./keys/key_private.pem
+./sample/original.jpg[SHA256] : 0aa50a87f0a5025ada74b16604c8448bdace0b945a974c50fb365e3bf66ef560
 Execute: python ../../rsa_main.py decrypt ./sample/test.bin ./sample/test.jpg ./keys/key_private.pem
 Execute: python ../../rsa_main.py verify ./sample/original.jpg ./sample/test.sig ./keys/key_public.pem
+./sample/original.jpg[SHA256] : 0aa50a87f0a5025ada74b16604c8448bdace0b945a974c50fb365e3bf66ef560
 Verify OK
 ./keys/key_public.pem:
 -----BEGIN PUBLIC KEY-----
@@ -248,8 +250,10 @@ args = main.ps1 ./keys/key_public.pem ./keys/key_private.pem ./sample/original.j
 Execute: python ../../rsa_main.py createkey
 Execute: python ../../rsa_main.py encrypt ./sample/original.jpg ./sample/test.bin ./keys/key_public.pem
 Execute: python ../../rsa_main.py signature ./sample/original.jpg ./sample/test.sig ./keys/key_private.pem
+./sample/original.jpg[SHA256] : 0aa50a87f0a5025ada74b16604c8448bdace0b945a974c50fb365e3bf66ef560
 Execute: python ../../rsa_main.py decrypt ./sample/test.bin ./sample/test.jpg ./keys/key_private.pem
 Execute: python ../../rsa_main.py verify ./sample/original.jpg ./sample/test.sig ./keys/key_public.pem
+./sample/original.jpg[SHA256] : 0aa50a87f0a5025ada74b16604c8448bdace0b945a974c50fb365e3bf66ef560
 Verify OK
 ./keys/key_public.pem :
 -----BEGIN PUBLIC KEY-----

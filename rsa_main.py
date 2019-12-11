@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import base64
+import hashlib
 import os
 import struct
 import sys
@@ -176,16 +178,13 @@ def create_signature(private_keyfile, source_file, signature_file):
 
     """ファイルの内容を読み込む"""
     f = open(source_file, "rb")
-    plain_bytes = f.read(1)
-    while True:
-        d = f.read(1)
-        if len(d) == 0:
-            break
-        plain_bytes += d
+    plain_bytes = f.read()
     f.close
 
     """ファイルハッシュを求める"""
     h1 = SHA256.new(plain_bytes)
+    print("{0}[SHA256] : {1}".format(source_file, hashlib.sha256(plain_bytes).hexdigest()))
+#   print("{0}[SHA256] : {1}".format(source_file, vars(h1)))
 
     """署名を生成"""
     signature = pkcs1_15.new(private_key).sign(h1)
@@ -200,25 +199,17 @@ def verify_signature(public_keyfile, source_file, signature_file):
 
     """ファイルの内容を読み込む"""
     f = open(source_file, "rb")
-    plain_bytes = f.read(1)
-    while True:
-        d = f.read(1)
-        if len(d) == 0:
-            break
-        plain_bytes += d
+    plain_bytes = f.read()
     f.close
 
     """ファイルハッシュを求める"""
     h1 = SHA256.new(plain_bytes)
+    print("{0}[SHA256] : {1}".format(source_file, hashlib.sha256(plain_bytes).hexdigest()))
+#   print("{0}[SHA256] : {1}".format(source_file, vars(h1)))
 
     """署名を読み込む"""
     f = open(signature_file, "rb")
-    signature = f.read(1)
-    while True:
-        d = f.read(1)
-        if len(d) == 0:
-            break
-        signature += d
+    signature = f.read()
     f.close
 
     # 公開鍵から妥当性を検証

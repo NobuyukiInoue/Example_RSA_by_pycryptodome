@@ -109,8 +109,8 @@ Get-Content $keyfile_private
 
 $result1 = python $cmd_filehash $file_source
 $result3 = python $cmd_filehash $file_decrypted
-Write-Host $file_source.PadRight(20)$result1 -ForegroundColor Cyan
-Write-Host $file_decrypted.PadRight(20)$result3 -ForegroundColor Cyan
+Write-Host $file_source.PadRight(25)$result1 -ForegroundColor Cyan
+Write-Host $file_decrypted.PadRight(25)$result3 -ForegroundColor Cyan
 
 
 ##--------------------------------------------------------##
